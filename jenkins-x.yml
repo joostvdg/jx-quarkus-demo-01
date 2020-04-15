@@ -1,1 +1,5 @@
 buildPack: maven-quarkus
+agent:
+  label: jenkins-maven-graalvm
+  image: maven-java11
+  container: maven-graalvm
