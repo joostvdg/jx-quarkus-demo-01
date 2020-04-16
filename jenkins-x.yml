@@ -24,7 +24,7 @@ pipelineConfig:
               memory: 12Gi
         steps:
           - name: mvn-deploy
-            command: mvn -Pnative clean package -e --show-version -Dquarkus.native.native-image-xmx=81920m
+            command: mvn -Pnative clean package -e --show-version -Dquarkus.native.native-image-xmx=81920m -Dnative-image.xmx=8g
             image: caladreas/builder-maven-graalvm-java11
             env:
               - name: _JAVA_OPTIONS
