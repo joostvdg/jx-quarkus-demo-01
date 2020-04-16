@@ -19,3 +19,7 @@ pipelineConfig:
           - name: mvn-deploy
             command: mvn -Pnative clean package -e --show-version
             image: caladreas/builder-maven-graalvm-java11
+            env:
+              - name: JAVA_OPTIONS
+                value: "-XX:+UnlockExperimentalVMOptions -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80  -Xms1024m -Xmx1536m"
+              
