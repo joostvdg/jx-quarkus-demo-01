@@ -12,8 +12,8 @@ pipelineConfig:
             - name: _JAVA_OPTIONS
               value: >-
                 -XX:+UnlockExperimentalVMOptions
-                -XX:MinRAMPercentage=50
-                -XX:MaxRAMPercentage=70
+                -XX:MinRAMPercentage=40
+                -XX:MaxRAMPercentage=60
                 -Xms7000m -Xmx81920m
           resources:
             requests:
@@ -24,13 +24,13 @@ pipelineConfig:
               memory: 12Gi
         steps:
           - name: mvn-deploy
-            command: mvn -Pnative clean package -e --show-version
+            command: mvn -Pnative clean package -e --show-version -Dquarkus.native.native-image-xmx=81920m
             image: caladreas/builder-maven-graalvm-java11
             env:
               - name: _JAVA_OPTIONS
                 value: >-
                     -XX:+UnlockExperimentalVMOptions
-                    -XX:MinRAMPercentage=50
-                    -XX:MaxRAMPercentage=70
+                    -XX:MinRAMPercentage=40
+                    -XX:MaxRAMPercentage=60
                     -Xms70000m -Xmx81920m
 
