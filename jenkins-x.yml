@@ -23,8 +23,8 @@ pipelineConfig:
         steps:
           - name: mvn-deploy
             command: mvn -Pnative clean package -e --show-version
-            #image: caladreas/builder-maven-graalvm-java8:0.0.1
-            image: maven-graalvm
+            image: caladreas/builder-maven-graalvm-java8:0.0.1
+            #image: maven-graalvm
             env:
               - name: _JAVA_OPTIONS
                 value: >-
