@@ -14,14 +14,14 @@ pipelineConfig:
                 -XX:+UnlockExperimentalVMOptions
                 -XX:MinRAMPercentage=70
                 -XX:MaxRAMPercentage=80
-                -Xms2048m -Xmx2560m
+                -Xms5048m -Xmx5560m
           resources:
             requests:
-              cpu: "1"
-              memory: 3Gi
+              cpu: "2"
+              memory: 6Gi
             limits:
-              cpu: "1"
-              memory: 3Gi
+              cpu: "2"
+              memory: 6Gi
         steps:
           - name: mvn-deploy
             command: mvn -Pnative clean package -e --show-version
@@ -32,5 +32,5 @@ pipelineConfig:
                     -XX:+UnlockExperimentalVMOptions
                     -XX:MinRAMPercentage=70
                     -XX:MaxRAMPercentage=80
-                    -Xms2048m -Xmx2560m
+                    -Xms5048m -Xmx5560m
 
