@@ -14,7 +14,7 @@ pipelineConfig:
                 -XX:+UnlockExperimentalVMOptions
                 -XX:MinRAMPercentage=50
                 -XX:MaxRAMPercentage=80
-                -Xms1024m -Xmx1536m"
+                -Xms1024m -Xmx1536m
           resources:
             requests:
               cpu: 1
@@ -32,5 +32,5 @@ pipelineConfig:
                     -XX:+UnlockExperimentalVMOptions
                     -XX:MinRAMPercentage=50
                     -XX:MaxRAMPercentage=80
-                    -Xms1024m -Xmx1536m"
+                    -Xms1024m -Xmx1536m
 
