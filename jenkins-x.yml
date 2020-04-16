@@ -7,6 +7,14 @@ pipelineConfig:
       - pipeline: release
         stage: build
         name: mvn-deploy
+        containerOptions:
+          resources:
+            requests:
+              cpu: 1
+              memory: 2048Mi
+            limits:
+              cpu: 1
+              memory: 2048Mi
         steps:
           - name: mvn-deploy
             command: mvn -Pnative clean package -e --show-version
