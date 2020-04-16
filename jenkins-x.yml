@@ -10,4 +10,4 @@ pipelineConfig:
         steps:
           - name: mvn-deploy
             command: mvn -Pnative clean package -e --show-version
-            image: quay.io/quarkus/centos-quarkus-maven:20.0.0-java11
+            image: caladreas/builder-maven-graalvm-java11
