@@ -9,6 +9,9 @@ image:
 
 # define environment variables here as a map of key: value
 env:
+  SPANNER_PROJECT_ID: vault:secret/spanner:project
+  SPANNER_INSTANCE_ID: vault:secret/spanner:instance-id
+  SPANNER_DATABASE: vault:secret/spanner:database
 
 # enable this flag to use knative serve to deploy the app
 knativeDeploy: false
@@ -53,11 +56,11 @@ service:
     fabric8.io/ingress.annotations: "kubernetes.io/ingress.class: nginx"
 resources:
   limits:
-    cpu: 250m
-    memory: 64Mi
+    cpu: 150m
+    memory: 32Mi
   requests:
-    cpu: 250m
-    memory: 64Mi
+    cpu: 150m
+    memory: 32Mi
 probePath: /health
 livenessProbe:
   initialDelaySeconds: 60
