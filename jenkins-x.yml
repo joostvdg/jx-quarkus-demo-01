@@ -11,12 +11,9 @@ pipelineConfig:
           env:
             - name: _JAVA_OPTIONS
               value: >-
-                -XX:+UnlockExperimentalVMOptions
-                -XX:MinRAMPercentage=50
-                -XX:MaxRAMPercentage=70
-                -Xms122880m -Xmx163840m
-                -Xss10m
-                -XX:+UseJVMCICompiler
+                -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler
+                -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=70
+                -Xms122880m -Xmx163840m -Xss10m
           resources:
             requests:
               cpu: "2"
@@ -31,11 +28,8 @@ pipelineConfig:
             env:
               - name: _JAVA_OPTIONS
                 value: >-
-                    -XX:+UnlockExperimentalVMOptions
-                    -XX:MinRAMPercentage=50
-                    -XX:MaxRAMPercentage=70
-                    -Xms122880m -Xmx163840m
-                    -Xss10m
-                    -XX:+UseJVMCICompiler
+                    -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler
+                    -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=70
+                    -Xms122880m -Xmx163840m -Xss10m
 
 
