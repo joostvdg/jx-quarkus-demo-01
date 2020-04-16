@@ -24,7 +24,7 @@ pipelineConfig:
         steps:
           - name: mvn-deploy
             command: mvn -Pnative clean package -e --show-version -Dquarkus.native.native-image-xmx=163840m -Dnative-image.xmx=16g
-            image: caladreas/builder-maven-graalvm-java11
+            image: caladreas/builder-maven-graalvm-java11:0.0.3
             env:
               - name: _JAVA_OPTIONS
                 value: >-
