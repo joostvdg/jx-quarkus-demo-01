@@ -1,7 +1,7 @@
 buildPack: maven-quarkus
 pipelineConfig:
   agent:
-    image: quay.io/quarkus/centos-quarkus-maven:20.0.0-java11
+    image: maven-java11
   pipelines:
     overrides:
       - pipeline: release
@@ -10,5 +10,4 @@ pipelineConfig:
         steps:
           - name: mvn-deploy
             command: mvn -Pnative clean package -e --show-version
-            dir: /workspace/source
             image: quay.io/quarkus/centos-quarkus-maven:20.0.0-java11
