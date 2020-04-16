@@ -12,16 +12,16 @@ pipelineConfig:
             - name: _JAVA_OPTIONS
               value: >-
                 -XX:+UnlockExperimentalVMOptions
-                -XX:MinRAMPercentage=50
+                -XX:MinRAMPercentage=70
                 -XX:MaxRAMPercentage=80
-                -Xms1024m -Xmx1536m
+                -Xms2048m -Xmx2560m
           resources:
             requests:
-              cpu: 1
-              memory: 2048Mi
+              cpu: "1"
+              memory: 3Gi
             limits:
-              cpu: 1
-              memory: 2048Mi
+              cpu: "1"
+              memory: 3Gi
         steps:
           - name: mvn-deploy
             command: mvn -Pnative clean package -e --show-version
@@ -30,7 +30,7 @@ pipelineConfig:
               - name: _JAVA_OPTIONS
                 value: >-
                     -XX:+UnlockExperimentalVMOptions
-                    -XX:MinRAMPercentage=50
+                    -XX:MinRAMPercentage=70
                     -XX:MaxRAMPercentage=80
-                    -Xms1024m -Xmx1536m
+                    -Xms2048m -Xmx2560m
 
