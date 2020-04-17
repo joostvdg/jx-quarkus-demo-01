@@ -9,9 +9,9 @@ image:
 
 # define environment variables here as a map of key: value
 env:
-  SPANNER_PROJECT_ID: vault:secret/spanner:project
-  SPANNER_INSTANCE_ID: vault:secret/spanner:instance-id
-  SPANNER_DATABASE: vault:secret/spanner:database
+  SPANNER_PROJECT_ID: vault:spanner:project
+  SPANNER_INSTANCE_ID: vault:spanner:instance-id
+  SPANNER_DATABASE: vault:spanner:database
 
 # enable this flag to use knative serve to deploy the app
 knativeDeploy: false
