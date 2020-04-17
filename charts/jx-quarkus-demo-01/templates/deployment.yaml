@@ -27,10 +27,11 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
-        envFrom:
-          - secretRef:
-              name: spannersa
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        volumeMounts:
+          - name: sa-key-volume
+            mountPath: "/etc/spanner"
+            readOnly: true
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
 {{- range $pkey, $pval := .Values.env }}
@@ -58,3 +59,10 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
 {{- end }}
+      volumes:
+        - name: sa-key-volume
+          secret:
+            secretName: {{ template "fullname" . }}-spanner-key
+            items:
+              - key: sakey
+                path: key.json

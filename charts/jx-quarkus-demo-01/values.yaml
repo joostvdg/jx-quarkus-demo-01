@@ -16,6 +16,7 @@ env:
   SPANNER_PROJECT_ID: vault:spanner:project
   SPANNER_INSTANCE_ID: vault:spanner:instance-id
   SPANNER_DATABASE: vault:spanner:database
+  GOOGLE_APPLICATION_CREDENTIALS: "/etc/spanner/key.json"
 
 # enable this flag to use knative serve to deploy the app
 knativeDeploy: false
