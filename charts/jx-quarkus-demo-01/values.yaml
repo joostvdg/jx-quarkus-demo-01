@@ -7,6 +7,10 @@ image:
   tag: dev
   pullPolicy: IfNotPresent
 
+# Secrets that get loaded via the (jx) environment from Vault
+secrets:
+  spannersa: ""
+
 # define environment variables here as a map of key: value
 env:
   SPANNER_PROJECT_ID: vault:spanner:project

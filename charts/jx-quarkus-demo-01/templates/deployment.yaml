@@ -27,6 +27,9 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
+        envFrom:
+          - secretRef:
+              name: secrets
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
