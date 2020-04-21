@@ -11,8 +11,9 @@ pipelineConfig:
           env:
             - name: _JAVA_OPTIONS
               value: >-
-                -XX:+UnlockExperimentalVMOptions
-                -Xms1024m -Xmx1024m -Xss10m
+                -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler
+                -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=70
+                -Xms2g -Xmx2g -Xss10m
           resources:
             requests:
               cpu: "1"
@@ -23,11 +24,13 @@ pipelineConfig:
         steps:
           - name: mvn-deploy
             # command: mvn -Pnative clean package -e --show-version
-            command: mvn clean package -e --show-version
+            command: mvn -Pnative clean package -e --show-version
+            image: caladreas/builder-maven-graalvm-java11:0.0.4
             env:
               - name: _JAVA_OPTIONS
                 value: >-
-                    -XX:+UnlockExperimentalVMOptions
-                    -Xms1024m -Xmx1024m -Xss10m
+                    -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler
+                    -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=70
+                    -Xms2g -Xmx2g -Xss10m
 
 

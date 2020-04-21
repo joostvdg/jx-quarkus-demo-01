@@ -18,30 +18,30 @@ package com.github.joostvdg.jx.demo.person;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 import org.hibernate.annotations.Type;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
 @Entity
-public class Person {
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Type(type = "uuid-char")
-    @Id
-    private UUID id;
+@Cacheable
+public class Person extends PanacheEntity {
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Type(type = "uuid-char")
+//    @Id
+//    private UUID id;
 
     @Column(unique = true)
     private String name;
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
+//    public UUID getId() {
+//        return id;
+//    }
+//
+//    public void setId(UUID id) {
+//        this.id = id;
+//    }
 
     public String getName() {
         return name;

@@ -52,18 +52,7 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-opentracing</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-container-image-docker</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-openapi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-config-yaml</artifactId>
-    </dependency>
+
     <!-- Quarkus Hibernate ORM specific dependencies -->
     <dependency>
       <groupId>io.quarkus</groupId>

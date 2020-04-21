@@ -17,17 +17,16 @@ package com.github.joostvdg.jx.demo.person;
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
-import java.util.UUID;
-import javax.inject.Inject;
+import io.quarkus.panache.common.Sort;
+
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 /**
  * An example JAX-RS controller that uses Panache repository for CRUD operations with a JPA entity.
@@ -35,19 +34,10 @@ import javax.ws.rs.core.MediaType;
  * <p>Optionally, you can also inject an {@link EntityManager} for direct JPA access.
  */
 @Path("/person")
+@ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class PersonController {
-
-    /**
-     * Inject a Panache repository for CRUD operations.
-     */
-    @Inject PersonRepository personRepository;
-
-    /**
-     * Optionally, inject the JPA {@link EntityManager} for direct JPA access.
-     */
-    @Inject EntityManager entityManager;
 
     /**
      * Create a new {@link Person} entity with auto-generated ID.
@@ -57,13 +47,22 @@ public class PersonController {
     @POST
     @Path("/")
     @Transactional
-    public Person create(Person person) {
-        Person p = new Person();
-        p.setName(person.getName());
+    public Response create(Person person) {
+        if (person.id != null) {
+            throw new WebApplicationException("Id was invalidly set on request.", 422);
+        }
 
-        personRepository.persist(p);
+        person.persist();
+        return Response.ok(person).status(201).build();
+    }
 
-        return p;
+    /**
+     * Retrieve all {@link Person} entities.
+     * @return a {@link Person} entity
+     */
+    @GET
+    public List<Person> get() {
+        return Person.listAll(Sort.by("name"));
     }
 
     /**
@@ -72,11 +71,12 @@ public class PersonController {
      * @return a {@link Person} entity
      */
     @GET
-    @Path("/{id}")
-    public Person retrieve(@PathParam("id") String id) {
-        return personRepository.findById(UUID.fromString(id));
-
-        // Optionally, you can use EntityManager instead.
-        // entityManager.find(Person.class, UUID.fromString(id));
+    @Path("{id}")
+    public Person getSingle(@PathParam Long id) {
+        Person entity = Person.findById(id);
+        if (entity == null) {
+            throw new WebApplicationException("Fruit with id of " + id + " does not exist.", 404);
+        }
+        return entity;
     }
 }
