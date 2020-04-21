@@ -1,7 +1,7 @@
 buildPack:  maven-java11
 pipelineConfig:
-  agent:
-    image: caladreas/builder-maven-graalvm-java11:0.1.0
+#  agent:
+#    image: caladreas/builder-maven-graalvm-java11:0.1.0
   pipelines:
     overrides:
       - pipeline: release
@@ -23,7 +23,7 @@ pipelineConfig:
         steps:
           - name: mvn-deploy
             # command: mvn -Pnative clean package -e --show-version
-            command: mvn -Pnative clean package -e --show-version -DskipTests=true -DskipDocs
+            command: mvn clean test -e --show-version -DskipDocs
             image: caladreas/builder-maven-graalvm-java11:0.0.4
             env:
               - name: _JAVA_OPTIONS
