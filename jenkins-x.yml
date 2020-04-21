@@ -13,14 +13,14 @@ pipelineConfig:
               value: >-
                 -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler
                 -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=70
-                -Xms2g -Xmx2g -Xss10m
+                -Xms8g -Xmx8g -Xss10m
           resources:
             requests:
-              cpu: "1"
-              memory: 3Gi
+              cpu: "2"
+              memory: 10Gi
             limits:
-              cpu: "1"
-              memory: 3Gi
+              cpu: "2"
+              memory: 10Gi
         steps:
           - name: mvn-deploy
             # command: mvn -Pnative clean package -e --show-version
@@ -31,6 +31,6 @@ pipelineConfig:
                 value: >-
                   -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler
                   -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=70
-                  -Xms2g -Xmx2g -Xss10m
+                  -Xms8g -Xmx8g -Xss10m
 
 
