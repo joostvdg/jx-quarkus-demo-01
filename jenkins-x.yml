@@ -1,7 +1,7 @@
-buildPack: maven-quarkus
+buildPack:  maven-java11
 pipelineConfig:
   agent:
-    image: maven-java11
+    image: caladreas/builder-maven-graalvm-java11:0.0.4
   pipelines:
     overrides:
       - pipeline: release
@@ -29,8 +29,8 @@ pipelineConfig:
             env:
               - name: _JAVA_OPTIONS
                 value: >-
-                    -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler
-                    -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=70
-                    -Xms2g -Xmx2g -Xss10m
+                  -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler
+                  -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=70
+                  -Xms2g -Xmx2g -Xss10m
 
 
