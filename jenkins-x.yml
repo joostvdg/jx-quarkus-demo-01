@@ -12,14 +12,14 @@ pipelineConfig:
             - name: _JAVA_OPTIONS
               value: >-
                 -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler
-                -Xms8g -Xmx8g -Xss10m
+                -Xms1g -Xmx2g -Xss10m
           resources:
             requests:
-              cpu: "2"
-              memory: 10Gi
+              cpu: "1"
+              memory: 3Gi
             limits:
-              cpu: "2"
-              memory: 10Gi
+              cpu: "1"
+              memory: 3Gi
         steps:
           - name: mvn-deploy
             # command: mvn -Pnative clean package -e --show-version
@@ -29,6 +29,6 @@ pipelineConfig:
               - name: _JAVA_OPTIONS
                 value: >-
                   -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler
-                  -Xms8g -Xmx8g -Xss10m
+                  -Xms1g -Xmx2g -Xss10m
 
 
