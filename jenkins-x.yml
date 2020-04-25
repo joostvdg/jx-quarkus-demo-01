@@ -1,7 +1,7 @@
 buildPack:  maven-java11
 pipelineConfig:
-#  agent:
-#    image: caladreas/builder-maven-graalvm-java11:0.1.0
+  agent:
+    image: caladreas/builder-maven-graalvm-java11:0.1.0
   pipelines:
     overrides:
       - pipeline: release
@@ -11,24 +11,23 @@ pipelineConfig:
           env:
             - name: _JAVA_OPTIONS
               value: >-
-                -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler
-                -Xms1g -Xmx2g -Xss10m
+                -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
+                -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
           resources:
             requests:
-              cpu: "1"
-              memory: 3Gi
+              cpu: "2"
+              memory: 10Gi
             limits:
-              cpu: "1"
-              memory: 3Gi
+              cpu: "2"
+              memory: 10Gi
         steps:
           - name: mvn-deploy
             # command: mvn -Pnative clean package -e --show-version
-            command: mvn clean test -e --show-version -DskipDocs
-            image: caladreas/builder-maven-graalvm-java11:0.0.4
+            command: mvn -Pnative clean package -e --show-version -DskipDocs
             env:
               - name: _JAVA_OPTIONS
                 value: >-
-                  -XX:+UnlockExperimentalVMOptions -XX:+UseJVMCICompiler
-                  -Xms1g -Xmx2g -Xss10m
+                  -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
+                  -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
 
 
