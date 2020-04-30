@@ -32,7 +32,7 @@
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy</artifactId>
+      <artifactId>quarkus-spring-data-jpa</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -48,39 +48,21 @@
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>io.quarkus</groupId>-->
-<!--      <artifactId>quarkus-smallrye-opentracing</artifactId>-->
-<!--    </dependency>-->
 
-    <!-- Quarkus Hibernate ORM specific dependencies -->
+
+
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-hibernate-orm</artifactId>
+      <artifactId>quarkus-spring-web</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-hibernate-orm-panache</artifactId>
+      <artifactId>quarkus-spring-di</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jdbc-h2</artifactId>
+      <artifactId>quarkus-jdbc-mysql</artifactId>
     </dependency>
-
-    <!-- Spanner Dialect -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-spanner-hibernate-dialect</artifactId>
-      <version>1.1.0</version>
-    </dependency>
-
-    <!-- JDBC Driver -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-spanner-jdbc</artifactId>
-      <version>1.15.0</version>
-    </dependency>
-
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-logging-json</artifactId>
@@ -92,6 +74,10 @@
 <!--    <dependency>-->
 <!--      <groupId>io.quarkus</groupId>-->
 <!--      <artifactId>quarkus-smallrye-metrics</artifactId>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>io.quarkus</groupId>-->
+<!--      <artifactId>quarkus-smallrye-opentracing</artifactId>-->
 <!--    </dependency>-->
   </dependencies>
   <build>
