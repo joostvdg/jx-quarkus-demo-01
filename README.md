@@ -287,10 +287,11 @@ Go to the `secret/` page, and create a new secret (top right `Create secret >`).
 Here you can specify a name, this is the secret _container_, it can contain one ore more Key Value pairs.
 For each configuration element we have, we create a secret.
 
-* **GOOGLE_SQL_PASS**
-* **GOOGLE_SQL_USER** 
-* **INSTANCE_CONNECTION_NAME**
-* **SA**: make a base64 encoding of the json string prior to adding the secret!
+* **GOOGLE_SQL_PASS** database password
+* **GOOGLE_SQL_USER** database user
+* **INSTANCE_CONNECTION_NAME** the instance connection string, look at your Google Cloud UI
+* **SA**: the service account that is allowed to connect to the proxy 
+    * make a base64 encoding of the json string prior to adding the secret!
 
 TODO: show Vault CLI commands
 
@@ -312,10 +313,33 @@ secrets:
   sql_password: ""
   sql_connection: ""
 
-# define environment variables here as a map of key: value
 env:
   GOOGLE_SQL_USER: vault:quarkus-petclinic:GOOGLE_SQL_USER
 ```
+
+#### Environment Values
+
+```yaml
+jx-quarkus-demo-01:
+  secrets:
+    sql_password: vault:quarkus-petclinic:GOOGLE_SQL_PASS
+    sql_connection: vault:quarkus-petclinic:SA
+```
+
+#### Resource And Probe
+
+```yaml
+resources:
+  limits:
+    cpu: 250m
+    memory: 64Mi
+  requests:
+    cpu: 250m
+    memory: 64Mi
+probePath: /health
+```
+
+The path, `/health`, is given to us by the dependency `quarkus-smallrye-health` and will serve as the health check endpoint for Kubernetes.
 
 ## TODO
 
