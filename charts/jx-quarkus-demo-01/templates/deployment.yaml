@@ -32,13 +32,13 @@ spec:
                   "-instances={{.Values.secrets.sql_connection}}=tcp:3306",
                   "-credential_file=/secrets/cloudsql/credentials.json"]
         volumeMounts:
-          - name: sa-key-volume
+          - name: cloudsql-instance-credentials
             mountPath: /secrets/cloudsql
             readOnly: true
       - name: {{ .Chart.Name }}
         envFrom:
           - secretRef:
-              name: {{ .Chart.Name }}-sql-secret
+              name: {{ template "fullname" . }}-sql-secret
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
@@ -68,9 +68,6 @@ spec:
         terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
 {{- end }}
         volumes:
-          - name: sa-key-volume
+          - name: cloudsql-instance-credentials
             secret:
-              secretName: {{ template "fullname" . }}-sqlsa
-              items:
-                - key: sakey
-                  path: credentials.json
+              secretName: {{ template "fullname" . }}-sql-sa

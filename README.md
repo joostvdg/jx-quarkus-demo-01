@@ -370,7 +370,7 @@ TODO: show Vault CLI commands
 secrets:
   sql_password: ""
   sql_connection: ""
-
+  sqlsa: ""
 env:
   GOOGLE_SQL_USER: vault:quarkus-petclinic:GOOGLE_SQL_USER
 ```
@@ -381,7 +381,8 @@ env:
 jx-quarkus-demo-01:
   secrets:
     sql_password: vault:quarkus-petclinic:GOOGLE_SQL_PASS
-    sql_connection: vault:quarkus-petclinic:SA
+    sql_connection: vault:quarkus-petclinic:INSTANCE_CONNECTION_NAME
+    sql_sa: vault:quarkus-petclinic:SA
 ```
 
 #### Resource And Probe

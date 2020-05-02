@@ -11,6 +11,7 @@ image:
 secrets:
   sql_password: ""
   sql_connection: ""
+  sqlsa: ""
 
 # define environment variables here as a map of key: value
 env:
