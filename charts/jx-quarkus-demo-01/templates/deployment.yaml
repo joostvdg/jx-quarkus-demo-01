@@ -67,7 +67,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
         terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
 {{- end }}
-        volumes:
-          - name: cloudsql-instance-credentials
-            secret:
-              secretName: {{ template "fullname" . }}-sql-sa
+      volumes:
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: {{ template "fullname" . }}-sql-sa
