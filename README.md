@@ -88,12 +88,39 @@ With this.
 
 ```java
 @RestController
-@RequestMapping("/fruits")
+@RequestMapping(value = "/fruits", produces="application/json", consumes = "application/json")
 ```
 
-Then, replace the following annoations for the methods:
+Replace all `@PathParams` with Spring's `@PathVariable`'s.
+Mind you, these require the name of the variable as a parameter.
 
-* `@GET` with `@GetMapping` 
+For example:
+
+```java
+@POST
+@Path("/name/{name}/color/{color}")
+@Produces("application/json")
+public Fruit create(@PathParam String name, @PathParam String color) {}
+```
+
+Becomes:
+
+```java
+@PostMapping("/name/{name}/color/{color}")
+public Fruit create(@PathVariable(value = "name") String name, @PathVariable(value = "color") String color) {
+```
+
+Then, replace the following annotations for the methods:
+
+```java
+@GET
+``` 
+
+with 
+
+```java
+@GetMapping
+```
 
 ```java
 @DELETE
@@ -159,6 +186,37 @@ quarkus.datasource.password=${GOOGLE_SQL_PASS}
 
 quarkus.hibernate-orm.database.generation=drop-and-create
 quarkus.hibernate-orm.sql-load-script=import.sql
+```
+
+### Testing
+
+Inspired by [@hantsy](https://medium.com/@hantsy/kickstart-your-first-quarkus-application-cde54f469973) on Medium.
+
+* add h2 test dependencies
+* add h2 datasource config to `src/test/resoureces/application.properties`
+
+```xml
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>io.quarkus:quarkus-test-h2</artifactId>
+  <scope>test</scope>
+</dependency>
+```
+
+```properties
+quarkus.datasource.url=jdbc:h2:tcp://localhost/mem:test
+quarkus.datasource.driver=org.h2.Driver
+quarkus.hibernate-orm.database.generation = drop-and-create
+quarkus.hibernate-orm.log.sql=true
+```
+
+### Replace json with jackson
+
+```xml
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-resteasy-jackson</artifactId>
+</dependency>
 ```
 
 ## Jenkins X
@@ -355,3 +413,6 @@ The path, `/health`, is given to us by the dependency `quarkus-smallrye-health` 
 * https://cloud.google.com/community/tutorials/run-spring-petclinic-on-app-engine-cloudsql
 * https://github.com/GoogleCloudPlatform/community/tree/master/tutorials/run-spring-petclinic-on-app-engine-cloudsql/spring-petclinic/src/main/resources
 * https://github.com/GoogleCloudPlatform/google-cloud-spanner-hibernate/blob/master/google-cloud-spanner-hibernate-samples/quarkus-jpa-sample
+* https://medium.com/@hantsy/kickstart-your-first-quarkus-application-cde54f469973
+* https://developers.redhat.com/blog/2020/04/10/migrating-a-spring-boot-microservices-application-to-quarkus/
+* https://www.baeldung.com/rest-assured-header-cookie-parameter
