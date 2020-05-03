@@ -28,5 +28,23 @@ pipelineConfig:
                 value: >-
                   -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
                   -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
+      - name: mvn-deploy
+        pipeline: release
+        stage: build
+        containerOptions:
+          envFrom:
+            - secretRef:
+                name: jx-quarkus-demo-01-sonar
+        step:
+          name: sonar
+          command: mvn
+          args:
+            - compile
+            - org.sonarsource.scanner.maven:sonar-maven-plugin:3.6.0.1398:sonar
+            - -Dsonar.host.url=$SONAR_HOST_URL
+            - -e
+            - --show-version
+            - -DskipTests=true
+        type: after
 
 
