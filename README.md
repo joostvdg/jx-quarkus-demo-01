@@ -400,12 +400,92 @@ probePath: /health
 
 The path, `/health`, is given to us by the dependency `quarkus-smallrye-health` and will serve as the health check endpoint for Kubernetes.
 
+## Sonar Integration
+
+### Self-Hosted
+
+* create secrets
+* add secrets to build
+* add build step to do sonar analysis
+
+
+#### Create Secrets
+
+* create API Token in Sonar
+* create Kubernetes Secrets for the SonarURL URL and API Token
+    * `SONAR_API_TOKEN` -> will be automatically used by the Sonar Maven plugin
+    * `SONAR_HOST_URL` 
+
+```sh
+kubectl create secret generic jx-quarkus-demo-01-sonar -n jx --from-literal=SONAR_API_TOKEN='mytoken' --from-literal=SONAR_HOST_URL='myurl'
+```
+
+#### Secrets Injection Alternatives
+
+* https://www.hashicorp.com/blog/injecting-vault-secrets-into-kubernetes-pods-via-a-sidecar/
+
+### Override Pipeline
+
+To run the SonarQube analysis, we add another step to the pipeline, in the `jenkins-x.yml` file.
+There are various ways to do it, in this case I'm using the `overrides` mechanic to add a new step _after_ `mvn-deploy`.
+
+Remember the Kubernetes secret we created earlier, due to the key names, we can now add them as environment variables directly from the secret.
+
+We do this via the `envFrom` construction:
+
+```yaml
+envFrom:
+  - secretRef:
+      name: jx-quarkus-demo-01-sonar
+```
+
+We can add any Kubernetes container configuration to our stage's container, via Jenkins X's `containerOptions` key.
+
+```yaml
+pipelineConfig:
+  pipelines:
+    overrides:
+      - name: mvn-deploy
+        pipeline: release
+        stage: build
+        containerOptions:
+          envFrom:
+            - secretRef:
+                name: jx-quarkus-demo-01-sonar
+        step:
+          name: sonar
+          command: mvn
+          args:
+            - compile
+            - org.sonarsource.scanner.maven:sonar-maven-plugin:3.6.0.1398:sonar
+            - -Dsonar.host.url=$SONAR_HOST_URL
+            - -e
+            - --show-version
+            - -DskipTests=true
+        type: after
+```
+
 ## TODO
 
 * https://quarkus.io/guides/spring-cloud-config-client
 * https://quarkus.io/guides/logging-sentry
 * https://quarkus.io/guides/vault-datasource
-* 
+* SonarQube Integration
+    * Self-hosted
+    * SonarCloud
+* Image Scanning?
+    * Whitesource?
+    * ??
+* Security Scanning
+* Integration Test in Preview
+    * spin up database with test datasource
+    * run tests
+    * post test results somewhere
+* some analysis' can be do in parallel -> how to configure with prow?
+    * maybe Lighthouse is easier?
+* Explore Secrets injection from Vault / External Secrets Controller (forgot the name)
+    * this is for the pipeline secrets, which Jenkins X currently does _not_ inject
+
 
 ## Other Reading Material
 
