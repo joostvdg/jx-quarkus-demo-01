@@ -51,7 +51,7 @@ pipelineConfig:
                   -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
                   -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
       - name: mvn-deploy
-        stage: sonar
+        stage: build
         containerOptions:
           envFrom:
             - secretRef:
