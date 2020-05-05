@@ -4,31 +4,9 @@ pipelineConfig:
     image: caladreas/jx-builder-graalvm-maven-jdk11:v0.7.0
   pipelines:
     overrides:
-      - name: mvn-install
+      - pipeline: release
         stage: build
-        containerOptions:
-          env:
-            - name: _JAVA_OPTIONS
-              value: >-
-                -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
-                -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
-          resources:
-            requests:
-              cpu: "2"
-              memory: 10Gi
-            limits:
-              cpu: "2"
-              memory: 10Gi
-        steps:
-          - name: mvn-install
-            command: mvn -Pnative clean package -e --show-version -DskipDocs
-            env:
-              - name: _JAVA_OPTIONS
-                value: >-
-                  -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
-                  -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
-      - name: mvn-deploy
-        stage: build
+        name: mvn-deploy
         containerOptions:
           env:
             - name: _JAVA_OPTIONS
@@ -61,13 +39,13 @@ pipelineConfig:
           name: sonar
           command: mvn
           args:
-            - -e
-            - --show-version
-            - -DskipTests=true
             - compile
             - org.sonarsource.scanner.maven:sonar-maven-plugin:3.6.0.1398:sonar
             - -Dsonar.host.url=$SONAR_HOST_URL
-        type: before
+            - -e
+            - --show-version
+            - -DskipTests=true
+        type: after
       - name: sonar
         pipeline: release
         stage: build
