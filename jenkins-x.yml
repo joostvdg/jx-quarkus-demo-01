@@ -4,9 +4,31 @@ pipelineConfig:
     image: caladreas/jx-builder-graalvm-maven-jdk11:v0.7.0
   pipelines:
     overrides:
-      - pipeline: release
+      - name: mvn-install
         stage: build
-        name: mvn-deploy
+        containerOptions:
+          env:
+            - name: _JAVA_OPTIONS
+              value: >-
+                -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
+                -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
+          resources:
+            requests:
+              cpu: "2"
+              memory: 10Gi
+            limits:
+              cpu: "2"
+              memory: 10Gi
+        steps:
+          - name: mvn-install
+            command: mvn -Pnative clean package -e --show-version -DskipDocs
+            env:
+              - name: _JAVA_OPTIONS
+                value: >-
+                  -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
+                  -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
+      - name: mvn-deploy
+        stage: build
         containerOptions:
           env:
             - name: _JAVA_OPTIONS
@@ -28,8 +50,8 @@ pipelineConfig:
                 value: >-
                   -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
                   -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
+
       - name: mvn-deploy
-        pipeline: release
         stage: build
         containerOptions:
           envFrom:
@@ -45,6 +67,23 @@ pipelineConfig:
             - -e
             - --show-version
             - -DskipTests=true
+        type: after
+      - name: sonar
+        stage: build
+        containerOptions:
+          envFrom:
+            - secretRef:
+                name: sonatype-oss-index
+        step:
+          name: sonatype-ossindex
+          command: mvn
+          args:
+            - org.sonatype.ossindex.maven:ossindex-maven-plugin:audit
+            - -f
+            - pom.xml
+            - -Dossindex.scope=compile
+            - -Dossindex.reportFile=ossindex.json
+            - -Dossindex.cvssScoreThreshold=4.0
         type: after
 
 

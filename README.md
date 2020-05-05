@@ -465,6 +465,46 @@ pipelineConfig:
         type: after
 ```
 
+For more syntax details, see the [Jenkins X Pipeline page](https://jenkins-x.io/docs/reference/pipeline-syntax-reference/#containerOptions).
+
+## Dependency Vulnerability Check
+
+* Snyk: https://github.com/snyk/snyk-maven-plugin
+* Sonatype: https://sonatype.github.io/ossindex-maven/maven-plugin/
+
+### Add Pipeline Step
+
+```yaml
+  - name: sonar
+    stage: build
+    containerOptions:
+      envFrom:
+        - secretRef:
+            name: sonatype-oss-index
+    step:
+      name: sonatype-ossindex
+      command: mvn 
+      args: 
+        - org.sonatype.ossindex.maven:ossindex-maven-plugin:audit 
+        - -f
+        - pom.xml
+        - -Dossindex.scope=compile
+        - -Dossindex.reportFile=ossindex.json
+        - -Dossindex.cvssScoreThreshold=4.0
+        - -Dossindex.fail=false
+    type: after
+```
+
+There's currently a vulnerability related to `org.apache.thrift:libthrift`, which is part of `quarkus-smallrey-opentracing`.
+Replacing `libthrift` with a version that is not vulnerable causes errors.
+
+So, we can:
+
+* not use open tracing
+* implement open tracing with another library (might not be Native Image compatible)
+* ignore this particular vulnerability
+* not fail the build
+
 ## TODO
 
 * https://quarkus.io/guides/spring-cloud-config-client
@@ -497,3 +537,4 @@ pipelineConfig:
 * https://medium.com/@hantsy/kickstart-your-first-quarkus-application-cde54f469973
 * https://developers.redhat.com/blog/2020/04/10/migrating-a-spring-boot-microservices-application-to-quarkus/
 * https://www.baeldung.com/rest-assured-header-cookie-parameter
+* https://jenkins-x.io/docs/reference/pipeline-syntax-reference/#containerOptions
