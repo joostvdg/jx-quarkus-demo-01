@@ -8,6 +8,11 @@ pipelineConfig:
         stage: build
         name: mvn-deploy
         containerOptions:
+          envFrom:
+            - secretRef:
+                name: jx-quarkus-demo-01-sonar
+            - secretRef:
+                name: sonatype-oss-index
           env:
             - name: _JAVA_OPTIONS
               value: >-
@@ -23,18 +28,9 @@ pipelineConfig:
         steps:
           - name: mvn-deploy
             command: mvn -Pnative clean package -e --show-version -DskipDocs
-            env:
-              - name: _JAVA_OPTIONS
-                value: >-
-                  -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
-                  -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
       - name: mvn-deploy
         pipeline: release
         stage: build
-        containerOptions:
-          envFrom:
-            - secretRef:
-                name: jx-quarkus-demo-01-sonar
         step:
           name: test-env
           command: env
@@ -42,10 +38,6 @@ pipelineConfig:
       - name: test-env
         pipeline: release
         stage: build
-        containerOptions:
-          envFrom:
-            - secretRef:
-                name: jx-quarkus-demo-01-sonar
         step:
           name: sonar
           command: mvn
@@ -60,10 +52,6 @@ pipelineConfig:
       - name: sonar
         pipeline: release
         stage: build
-        containerOptions:
-          envFrom:
-            - secretRef:
-                name: sonatype-oss-index
         step:
           name: sonatype-ossindex
           command: mvn
