@@ -36,6 +36,17 @@ pipelineConfig:
             - secretRef:
                 name: jx-quarkus-demo-01-sonar
         step:
+          name: test-env
+          command: env
+        type: before
+      - name: test-env
+        pipeline: release
+        stage: build
+        containerOptions:
+          envFrom:
+            - secretRef:
+                name: jx-quarkus-demo-01-sonar
+        step:
           name: sonar
           command: mvn
           args:
