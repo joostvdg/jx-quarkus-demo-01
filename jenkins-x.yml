@@ -62,6 +62,7 @@ pipelineConfig:
             - -Dossindex.scope=compile
             - -Dossindex.reportFile=ossindex.json
             - -Dossindex.cvssScoreThreshold=4.0
+            - -Dossindex.fail=false
         type: after
 
 
