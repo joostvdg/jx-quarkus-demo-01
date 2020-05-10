@@ -15,7 +15,23 @@ cleanup:
     helm.sh/hook: pre-delete
     helm.sh/hook-delete-policy: hook-succeeded
 
+mysql:
+  mysqlUser: fruitsadmin
+  mysqlPassword: JFjec3c7MgFH6cZyKaVNaC2F
+  mysqlRootPassword: 4dDDPE5nj3dVPxDYsPgCzu9B
+  mysqlDatabase: fruits
+  persistence:
+    enabled: true
+    size: 50Gi
+
 preview:
+  cloudsql:
+    enabled: "false"
+  secrets:
+    sql_password: "4dDDPE5nj3dVPxDYsPgCzu9B"
+  env:
+    GOOGLE_SQL_USER: root
+    GOOGLE_SQL_CONN: jdbc:mysql://mysql:3306/fruits
   image:
     repository:
     tag:

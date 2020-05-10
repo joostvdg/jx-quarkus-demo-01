@@ -607,6 +607,68 @@ quarkus.log.category."org.flywaydb.core".level=DEBUG
 quarkus.log.category."io.quarkus.flyway".level=DEBUG
 ```
 
+```yaml
+      {{ if eq .Values.cloudsql.enabled "true" }}
+      - name: cloudsql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy:1.16
+        command: ["/cloud_sql_proxy",
+                  "-instances={{.Values.secrets.sql_connection}}=tcp:3306",
+                  "-credential_file=/secrets/cloudsql/credentials.json"]
+        volumeMounts:
+          - name: cloudsql-instance-credentials
+            mountPath: /secrets/cloudsql
+            readOnly: true
+       {{ end }}
+```
+
+In `charts/jx-quarkus-demo-01/values.yaml`:
+
+```yaml
+cloudsql:
+  enabled: "true"
+
+# define environment variables here as a map of key: value
+env:
+  GOOGLE_SQL_USER: vault:quarkus-petclinic:GOOGLE_SQL_USER
+  GOOGLE_SQL_CONN: jdbc:mysql://127.0.0.1:3306/fruits
+```
+
+In `charts/preview/values.yaml`:
+
+```yaml
+mysql:
+  mysqlUser: fruitsadmin
+  mysqlPassword: JFjec3c7MgFH6cZyKaVNaC2F
+  mysqlRootPassword: 4dDDPE5nj3dVPxDYsPgCzu9B
+  mysqlDatabase: fruits
+  persistence:
+    enabled: true
+    size: 50Gi
+
+preview:
+  cloudsql:
+    enabled: "false"
+  secrets:
+    sql_password: "4dDDPE5nj3dVPxDYsPgCzu9B"
+  env:
+    GOOGLE_SQL_USER: root
+    GOOGLE_SQL_CONN: jdbc:mysql://mysql:3306/fruits
+```
+
+In `charts/preview/requirements.yaml`:
+
+```yaml
+- name: mysql
+  version: 1.6.3
+  repository:  https://kubernetes-charts.storage.googleapis.com
+
+  # !! "alias: preview" must be last entry in dependencies array !!
+  # !! Place custom dependencies above !!
+- alias: preview
+  name: jx-quarkus-demo-01
+  repository: file://../jx-quarkus-demo-01
+```
+
 ### Use Actual MySQL Database In Local Build
 
 TODO
@@ -650,3 +712,4 @@ TODO
 * https://openliberty.io/docs/ref/general/#metrics-catalog.html
 * https://grafana.com/grafana/dashboards/4701
 * https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/
+* https://github.com/quarkusio/quarkus/tree/master/integration-tests
