@@ -23,9 +23,9 @@ spec:
       annotations:
         prometheus.io/port: "8080"
         prometheus.io/scrape: "true"
-    {{- if .Values.podAnnotations }}
-    {{ toYaml .Values.podAnnotations | indent 8 }} #Only for pods
-    {{- end }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }} #Only for pods
+{{- end }}
     spec:
       containers:
       - name: cloudsql-proxy
