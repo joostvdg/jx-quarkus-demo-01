@@ -408,7 +408,6 @@ The path, `/health`, is given to us by the dependency `quarkus-smallrye-health` 
 * add secrets to build
 * add build step to do sonar analysis
 
-
 #### Create Secrets
 
 * create API Token in Sonar
@@ -505,6 +504,64 @@ So, we can:
 * ignore this particular vulnerability
 * not fail the build
 
+## Monitoring Metrics
+
+As we're running Jenkins X, we run in Kubernetes. 
+The most commonly used monitoring solution with Kubernetes is Prometheus and Grafana.
+
+Quarkus has out-of-the-box support for exposing prometheus metrics, via the `smallrye-metrics` library.
+
+To create a Grafana dashboard for our application, we need to take the following steps:
+
+* add dependency on Quarkus' `smallrye-metrics` library
+* add (Kubernetes) annotations to our Helm Chart's Deployment definition
+* add (Java) annotations to our code, specifying the metrics
+
+For more information on adding metrics to your Quarkus application, [read the Quarkus Metrics guide](https://quarkus.io/guides/microprofile-metrics).
+
+### Add quarkus-smallrye-metrics Dependency
+
+```xml
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-smallrye-metrics</artifactId>
+</dependency>
+```
+
+### Update Deployment Definition
+
+```yaml
+      annotations:
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }} #Only for pods
+{{- end }}
+```
+ 
+### Add Metrics Annotations to our Code
+
+Look at [FruitResource.java](src/main/java/com/github/joostvdg/jx/quarkus/fruits/FruitResource.java) for all the metrics.
+
+For example, on the `findAll()` method, for the `/fruits` endpoint, we can add a counter - how many times is this endpoint called - and a timer - various percentile buckets on the duration of the call:
+
+```java
+@Counted(name = "fruit_get_all_count", description = "How many times all Fruits have been retrieved.")
+@Timed(name = "fruit_get_all_timer", description = "A measure of how long it takes to retrieve all Fruits.", unit = MetricUnits.MILLISECONDS)
+```
+
+### Grafana Dashboard
+
+See [grafana-dashboard.json](grafana-dashboard.json) for the dashboard to import into Grafana.
+
+## Tracing
+
+* jaeger / opentracing
+
+## Stack Traces
+
+* sentry
+
 ## TODO
 
 * https://quarkus.io/guides/spring-cloud-config-client
@@ -538,3 +595,6 @@ So, we can:
 * https://developers.redhat.com/blog/2020/04/10/migrating-a-spring-boot-microservices-application-to-quarkus/
 * https://www.baeldung.com/rest-assured-header-cookie-parameter
 * https://jenkins-x.io/docs/reference/pipeline-syntax-reference/#containerOptions
+* https://openliberty.io/blog/2020/04/09/microprofile-3-3-open-liberty-20004.html#gra
+* https://openliberty.io/docs/ref/general/#metrics-catalog.html
+* https://grafana.com/grafana/dashboards/4701
