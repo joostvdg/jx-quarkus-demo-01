@@ -31,7 +31,7 @@ preview:
     sql_password: "4dDDPE5nj3dVPxDYsPgCzu9B"
   env:
     GOOGLE_SQL_USER: root
-    GOOGLE_SQL_CONN: jdbc:mysql://mysql:3306/fruits
+    GOOGLE_SQL_CONN: jdbc:mysql://preview-mysql:3306/fruits
   image:
     repository:
     tag:
