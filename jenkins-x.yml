@@ -2,55 +2,39 @@ buildPack:  maven-java11
 pipelineConfig:
   agent:
     image: caladreas/jx-builder-graalvm-maven-jdk11:v0.7.0
+  containerOptions:
+    envFrom:
+      - secretRef:
+          name: jx-quarkus-demo-01-sonar
+      - secretRef:
+          name: sonatype-oss-index
+    env:
+      - name: _JAVA_OPTIONS
+        value: >-
+          -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
+          -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
+    resources:
+      requests:
+        cpu: "2"
+        memory: 10Gi
+      limits:
+        cpu: "2"
+        memory: 10Gi
   pipelines:
     overrides:
+      - pipeline: pullRequest
+        stage: build
+        name: mvn-install
+        steps:
+          - name: mvn-deploy
+            command: mvn -Pnative clean package -e --show-version -DskipDocs
       - pipeline: release
         stage: build
         name: mvn-deploy
-        containerOptions:
-          envFrom:
-            - secretRef:
-                name: jx-quarkus-demo-01-sonar
-            - secretRef:
-                name: sonatype-oss-index
-          env:
-            - name: _JAVA_OPTIONS
-              value: >-
-                -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
-                -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
-          resources:
-            requests:
-              cpu: "2"
-              memory: 10Gi
-            limits:
-              cpu: "2"
-              memory: 10Gi
         steps:
           - name: mvn-deploy
             command: mvn -Pnative clean package -e --show-version -DskipDocs
       - name: mvn-deploy
-        pipeline: release
-        stage: build
-        step:
-          name: test-env
-          command: env
-        type: before
-      - name: test-env
-        pipeline: release
-        stage: build
-        step:
-          name: sonar
-          command: mvn
-          args:
-            - compile
-            - org.sonarsource.scanner.maven:sonar-maven-plugin:3.6.0.1398:sonar
-            - -Dsonar.host.url=$SONAR_HOST_URL
-            - -e
-            - --show-version
-            - -DskipTests=true
-        type: after
-      - name: sonar
-        pipeline: release
         stage: build
         step:
           name: sonatype-ossindex
@@ -63,6 +47,20 @@ pipelineConfig:
             - -Dossindex.reportFile=ossindex.json
             - -Dossindex.cvssScoreThreshold=4.0
             - -Dossindex.fail=false
+        type: before
+      - name: sonatype-ossindex
+        stage: build
+        pipeline: release
+        step:
+          name: sonar
+          command: mvn
+          args:
+            - compile
+            - org.sonarsource.scanner.maven:sonar-maven-plugin:3.6.0.1398:sonar
+            - -Dsonar.host.url=$SONAR_HOST_URL
+            - -e
+            - --show-version
+            - -DskipTests=true
         type: after
 
 
