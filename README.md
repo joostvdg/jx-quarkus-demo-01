@@ -562,6 +562,57 @@ See [grafana-dashboard.json](grafana-dashboard.json) for the dashboard to import
 
 * sentry
 
+## Docker Scan with Anchore
+
+* https://github.com/anchore/anchore-engine
+
+## Integration Testing In Preview Charts
+
+### Database Schema Management
+
+```xml
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-flyway</artifactId>
+</dependency>
+```
+
+```java
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+```
+
+```java
+@Entity
+public class Fruit {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+```
+
+```properties
+quarkus.datasource.url=jdbc:h2:tcp://localhost/mem:fruits;MODE=MYSQL;DB_CLOSE_DELAY=-1
+quarkus.datasource.driver=org.h2.Driver
+#quarkus.hibernate-orm.database.generation = drop-and-create
+
+quarkus.hibernate-orm.log.sql=true
+#quarkus.hibernate-orm.database.generation=validate
+quarkus.hibernate-orm.database.default-schema=FRUITS
+quarkus.flyway.migrate-at-start=true
+quarkus.flyway.schemas=FRUITS
+#quarkus.flyway.baseline-on-migrate=true
+
+quarkus.log.console.level=DEBUG
+quarkus.log.category."org.flywaydb.core".level=DEBUG
+quarkus.log.category."io.quarkus.flyway".level=DEBUG
+```
+
+### Use Actual MySQL Database In Local Build
+
+TODO
+
+* see: https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/
+
 ## TODO
 
 * https://quarkus.io/guides/spring-cloud-config-client
@@ -598,3 +649,4 @@ See [grafana-dashboard.json](grafana-dashboard.json) for the dashboard to import
 * https://openliberty.io/blog/2020/04/09/microprofile-3-3-open-liberty-20004.html#gra
 * https://openliberty.io/docs/ref/general/#metrics-catalog.html
 * https://grafana.com/grafana/dashboards/4701
+* https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/
