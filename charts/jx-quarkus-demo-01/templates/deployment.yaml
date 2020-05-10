@@ -20,10 +20,12 @@ spec:
       labels:
         draft: {{ default "draft-app" .Values.draft }}
         app: {{ template "fullname" . }}
-{{- if .Values.podAnnotations }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
-{{- end }}
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+    {{- if .Values.podAnnotations }}
+    {{ toYaml .Values.podAnnotations | indent 8 }} #Only for pods
+    {{- end }}
     spec:
       containers:
       - name: cloudsql-proxy
