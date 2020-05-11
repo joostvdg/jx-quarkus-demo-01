@@ -6,13 +6,6 @@ pipelineConfig:
           name: jx-quarkus-demo-01-sonar
       - secretRef:
           name: sonatype-oss-index
-    resources:
-      requests:
-        cpu: "2"
-        memory: 10Gi
-      limits:
-        cpu: "2"
-        memory: 10Gi
   pipelines:
     overrides:
       - pipeline: pullRequest
@@ -28,6 +21,13 @@ pipelineConfig:
               value: >-
                 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
                 -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
+          resources:
+            requests:
+              cpu: "2"
+              memory: 10Gi
+            limits:
+              cpu: "2"
+              memory: 10Gi
       - pipeline: release
         stage: build
         name: mvn-deploy
@@ -41,6 +41,13 @@ pipelineConfig:
               value: >-
                 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
                 -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
+          resources:
+            requests:
+              cpu: "2"
+              memory: 10Gi
+            limits:
+              cpu: "2"
+              memory: 10Gi
       - name: mvn-deploy
         stage: build
         step:
