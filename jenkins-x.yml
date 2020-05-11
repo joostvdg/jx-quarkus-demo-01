@@ -1,7 +1,5 @@
 buildPack:  maven-java11
 pipelineConfig:
-  agent:
-    image: caladreas/jx-builder-graalvm-maven-jdk11:v0.7.0
   containerOptions:
     envFrom:
       - secretRef:
@@ -23,6 +21,7 @@ pipelineConfig:
         steps:
           - name: mvn-deploy
             command: mvn -Pnative install -e --show-version
+            image: caladreas/jx-builder-graalvm-maven-jdk11:v0.7.0
         containerOptions:
           env:
             - name: _JAVA_OPTIONS
@@ -35,6 +34,7 @@ pipelineConfig:
         steps:
           - name: mvn-deploy
             command: mvn -Pnative package -e --show-version -DskipDocs
+            image: caladreas/jx-builder-graalvm-maven-jdk11:v0.7.0
         containerOptions:
           env:
             - name: _JAVA_OPTIONS
