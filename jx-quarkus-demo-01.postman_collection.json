@@ -17,7 +17,7 @@
 						"exec": [
 							"tests[\"Successful GET request\"] = responseCode.code === 200;",
 							"",
-							"tests[\"Response time is less than 200ms\"] = responseTime < 250;",
+							"tests[\"Response time is less than 400ms\"] = responseTime < 400;",
 							"",
 							"var jsonData = JSON.parse(responseBody);",
 							"tests[\"JSON Data Test-1\"] = jsonData[0].name === \"Cherry\";",
@@ -49,7 +49,7 @@
 						"exec": [
 							"tests[\"Successful GET request\"] = responseCode.code === 200;",
 							"",
-							"tests[\"Response time is less than 200ms\"] = responseTime < 250;",
+							"tests[\"Response time is less than 400ms\"] = responseTime < 400;",
 							"var jsonData = JSON.parse(responseBody);",
 							"postman.setGlobalVariable(\"MANDARIN_ID\", jsonData.id);"
 						]
@@ -75,7 +75,7 @@
 						"exec": [
 							"tests[\"Successful GET request\"] = responseCode.code === 500;",
 							"",
-							"tests[\"Response time is less than 200ms\"] = responseTime < 250;",
+							"tests[\"Response time is less than 400ms\"] = responseTime < 400;",
 							"",
 							""
 						]
@@ -101,7 +101,7 @@
 						"exec": [
 							"tests[\"Successful GET request\"] = responseCode.code === 204;",
 							"",
-							"tests[\"Response time is less than 200ms\"] = responseTime < 250;"
+							"tests[\"Response time is less than 400ms\"] = responseTime < 400;"
 						]
 					}
 				}
