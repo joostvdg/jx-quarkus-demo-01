@@ -696,7 +696,6 @@ TODO
 * Explore Secrets injection from Vault / External Secrets Controller (forgot the name)
     * this is for the pipeline secrets, which Jenkins X currently does _not_ inject
 
-
 ## Other Reading Material
 
 * https://quarkus.io/guides/writing-native-applications-tips
