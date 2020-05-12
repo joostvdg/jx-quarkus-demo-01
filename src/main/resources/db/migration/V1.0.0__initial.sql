@@ -1,4 +1,4 @@
-SET MODE MYSQL; /* another h2 way to set mode */
+-- SET MODE MYSQL; /* another h2 way to set mode */
 
 -- MySQL dump 10.13  Distrib 5.7.25, for Linux (x86_64)
 --
