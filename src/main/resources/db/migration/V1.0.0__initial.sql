@@ -40,6 +40,8 @@ CREATE TABLE `fruit` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+CREATE UNIQUE INDEX fruit_name_color ON fruit(color,name);
+
 --
 -- Dumping data for table `Fruit`
 --
@@ -53,25 +55,25 @@ CREATE TABLE `fruit` (
 -- Table structure for table `hibernate_sequence`
 --
 
-DROP TABLE IF EXISTS `hibernate_sequence`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `hibernate_sequence` (
-  `next_val` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
+-- DROP TABLE IF EXISTS `hibernate_sequence`;
+-- /*!40101 SET @saved_cs_client     = @@character_set_client */;
+-- /*!40101 SET character_set_client = utf8 */;
+-- CREATE TABLE `hibernate_sequence` (
+--   `next_val` bigint(20) DEFAULT NULL
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- /*!40101 SET character_set_client = @saved_cs_client */;
 --
--- Dumping data for table `hibernate_sequence`
+-- --
+-- -- Dumping data for table `hibernate_sequence`
+-- --
 --
-
--- LOCK TABLES `hibernate_sequence` WRITE;
-/*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
-INSERT INTO `hibernate_sequence` VALUES (1);
-INSERT INTO `hibernate_sequence` VALUES (2);
-INSERT INTO `hibernate_sequence` VALUES (3);
-INSERT INTO `hibernate_sequence` VALUES (4);
-INSERT INTO `hibernate_sequence` VALUES (5);
+-- -- LOCK TABLES `hibernate_sequence` WRITE;
+-- /*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
+-- INSERT INTO `hibernate_sequence` VALUES (1);
+-- INSERT INTO `hibernate_sequence` VALUES (2);
+-- INSERT INTO `hibernate_sequence` VALUES (3);
+-- INSERT INTO `hibernate_sequence` VALUES (4);
+-- INSERT INTO `hibernate_sequence` VALUES (5);
 /*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
 -- UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
