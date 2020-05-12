@@ -1,0 +1,68 @@
+{
+	"variables": [],
+	"info": {
+		"name": "jx-quarkus-demo-01",
+		"_postman_id": "2c62b599-f952-d49c-3b36-5fb1b7a77472",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "find-all-fruits",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Successful GET request\"] = responseCode.code === 200;",
+							"",
+							"tests[\"Response time is less than 200ms\"] = responseTime < 250;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Your test name\"] = jsonData[0].name === \"Cherry\";",
+							"tests[\"Your test name\"] = jsonData[1].name === \"Apple\";",
+							"tests[\"Your test name\"] = jsonData[2].name === \"Banana\";",
+							"tests[\"Your test name\"] = jsonData[3].color === \"Green\";",
+							"tests[\"Your test name\"] = jsonData[4].color === \"Red\";",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/fruits",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Test fina all fruits"
+			},
+			"response": []
+		},
+		{
+			"name": "post-new-fruit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Successful GET request\"] = responseCode.code === 201;",
+							"",
+							"tests[\"Response time is less than 200ms\"] = responseTime < 250;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/fruits/name/Banana/color/Yellow",
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

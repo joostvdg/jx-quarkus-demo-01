@@ -28,6 +28,21 @@ pipelineConfig:
             limits:
               cpu: "2"
               memory: 10Gi
+      - name: jx-preview
+        stage: promote
+        pipeline: pullRequest
+        step:
+          name: postman-tests
+          dir: /workspace/source
+          image: postman/newman
+          command: newman
+          args:
+            - run
+            - jx-quarkus-demo-01.postman_collection.json
+            - --global-var
+            - "baseUrl=http://jx-quarkus-demo-01.jx-joostvdg-jx-quarkus-demo-01-pr-${PULL_NUMBER}.jx.training.cloudbees.com"
+            - --verbose
+        type: after
       - pipeline: release
         stage: build
         name: mvn-deploy
