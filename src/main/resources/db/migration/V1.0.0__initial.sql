@@ -29,10 +29,10 @@
 -- Table structure for table `Fruit`
 --
 
-DROP TABLE IF EXISTS `Fruit`;
+DROP TABLE IF EXISTS `fruit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Fruit` (
+CREATE TABLE `fruit` (
   `id` bigint(20) NOT NULL,
   `color` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
