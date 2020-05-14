@@ -704,6 +704,7 @@ Which will something like this:
             - --global-var
             - "baseUrl=http://jx-quarkus-demo-01.jx-joostvdg-jx-quarkus-demo-01-pr-${PULL_NUMBER}.jx.training.cloudbees.com"
             - --verbose
+        type: after
 ```
 
 As each PR will have a unique URL based on the PR number, we set the global variable - from Newman perspective - `baseUrl` to `$PULL_NUMBER`.

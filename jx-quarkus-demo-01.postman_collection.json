@@ -74,9 +74,6 @@
 						"type": "text/javascript",
 						"exec": [
 							"tests[\"Successful GET request\"] = responseCode.code === 500;",
-							"",
-							"tests[\"Response time is less than 400ms\"] = responseTime < 400;",
-							"",
 							""
 						]
 					}
