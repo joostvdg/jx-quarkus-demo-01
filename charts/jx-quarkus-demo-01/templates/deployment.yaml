@@ -28,6 +28,7 @@ spec:
 {{- end }}
     spec:
       containers:
+      {{ if eq .Values.cloudsql.enabled "true" }}
       - name: cloudsql-proxy
         image: gcr.io/cloudsql-docker/gce-proxy:1.16
         command: ["/cloud_sql_proxy",
@@ -37,6 +38,7 @@ spec:
           - name: cloudsql-instance-credentials
             mountPath: /secrets/cloudsql
             readOnly: true
+       {{ end }}
       - name: {{ .Chart.Name }}
         envFrom:
           - secretRef:
@@ -44,6 +46,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+
 {{- range $pkey, $pval := .Values.env }}
         - name: {{ $pkey }}
           value: {{ $pval }}

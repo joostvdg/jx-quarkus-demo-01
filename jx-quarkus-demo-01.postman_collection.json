@@ -1,0 +1,116 @@
+{
+	"variables": [],
+	"info": {
+		"name": "jx-quarkus-demo-01",
+		"_postman_id": "2c62b599-f952-d49c-3b36-5fb1b7a77472",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "find-all-fruits",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Successful GET request\"] = responseCode.code === 200;",
+							"",
+							"tests[\"Response time is less than 400ms\"] = responseTime < 400;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"JSON Data Test-1\"] = jsonData[0].name === \"Cherry\";",
+							"tests[\"JSON Data Test-2\"] = jsonData[1].name === \"Apple\";",
+							"tests[\"JSON Data Test-3\"] = jsonData[2].name === \"Banana\";",
+							"tests[\"JSON Data Test-4\"] = jsonData[3].color === \"Green\";",
+							"tests[\"JSON Data Test-5\"] = jsonData[4].color === \"Red\";",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/fruits",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Test fina all fruits"
+			},
+			"response": []
+		},
+		{
+			"name": "post-new-fruit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Successful GET request\"] = responseCode.code === 200;",
+							"",
+							"tests[\"Response time is less than 400ms\"] = responseTime < 400;",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"MANDARIN_ID\", jsonData.id);"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/fruits/name/Mandarin/color/Orange",
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "post-new-fruit-again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Successful GET request\"] = responseCode.code === 500;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/fruits/name/Mandarin/color/Orange",
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "{{baseUrl}}/fruits/{{MANDARIN_ID}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Successful GET request\"] = responseCode.code === 204;",
+							"",
+							"tests[\"Response time is less than 400ms\"] = responseTime < 400;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/fruits/{{MANDARIN_ID}}",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
