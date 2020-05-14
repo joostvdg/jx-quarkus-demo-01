@@ -14,9 +14,13 @@ secrets:
   sqlsa: ""
   sentry_dsn: vault:quarkus-petclinic:SENTRY_DSN
 
+cloudsql:
+  enabled: "true"
+
 # define environment variables here as a map of key: value
 env:
   GOOGLE_SQL_USER: vault:quarkus-petclinic:GOOGLE_SQL_USER
+  GOOGLE_SQL_CONN: jdbc:mysql://127.0.0.1:3306/fruits
 
 # enable this flag to use knative serve to deploy the app
 knativeDeploy: false

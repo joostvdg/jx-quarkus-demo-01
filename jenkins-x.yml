@@ -1,25 +1,11 @@
 buildPack:  maven-java11
 pipelineConfig:
-  agent:
-    image: caladreas/jx-builder-graalvm-maven-jdk11:v0.7.0
   containerOptions:
     envFrom:
       - secretRef:
           name: jx-quarkus-demo-01-sonar
       - secretRef:
           name: sonatype-oss-index
-    env:
-      - name: _JAVA_OPTIONS
-        value: >-
-          -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
-          -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
-    resources:
-      requests:
-        cpu: "2"
-        memory: 10Gi
-      limits:
-        cpu: "2"
-        memory: 10Gi
   pipelines:
     overrides:
       - pipeline: pullRequest
@@ -27,13 +13,56 @@ pipelineConfig:
         name: mvn-install
         steps:
           - name: mvn-deploy
-            command: mvn -Pnative clean package -e --show-version -DskipDocs
+            command: mvn -Pnative package -e --show-version
+            image: caladreas/jx-builder-graalvm-maven-jdk11:v0.9.0
+        containerOptions:
+          env:
+            - name: _JAVA_OPTIONS
+              value: >-
+                -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
+                -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
+          resources:
+            requests:
+              cpu: "2"
+              memory: 10Gi
+            limits:
+              cpu: "2"
+              memory: 10Gi
+      - name: jx-preview
+        stage: promote
+        pipeline: pullRequest
+        step:
+          name: postman-tests
+          dir: /workspace/source
+          image: postman/newman
+          command: newman
+          args:
+            - run
+            - jx-quarkus-demo-01.postman_collection.json
+            - --global-var
+            - "baseUrl=http://jx-quarkus-demo-01.jx-joostvdg-jx-quarkus-demo-01-pr-${PULL_NUMBER}.jx.training.cloudbees.com"
+            - --verbose
+        type: after
       - pipeline: release
         stage: build
         name: mvn-deploy
         steps:
           - name: mvn-deploy
-            command: mvn -Pnative clean package -e --show-version -DskipDocs
+            command: mvn -Pnative package -e --show-version -DskipDocs
+            image: caladreas/jx-builder-graalvm-maven-jdk11:v0.9.0
+        containerOptions:
+          env:
+            - name: _JAVA_OPTIONS
+              value: >-
+                -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler
+                -Xms8g -Xmx8g -XX:+PrintCommandLineFlags -XX:+UseSerialGC
+          resources:
+            requests:
+              cpu: "2"
+              memory: 10Gi
+            limits:
+              cpu: "2"
+              memory: 10Gi
       - name: mvn-deploy
         stage: build
         step:
@@ -62,5 +91,6 @@ pipelineConfig:
             - --show-version
             - -DskipTests=true
         type: after
+
 
 

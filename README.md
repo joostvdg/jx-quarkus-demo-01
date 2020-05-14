@@ -607,6 +607,238 @@ quarkus.log.category."org.flywaydb.core".level=DEBUG
 quarkus.log.category."io.quarkus.flyway".level=DEBUG
 ```
 
+```yaml
+      {{ if eq .Values.cloudsql.enabled "true" }}
+      - name: cloudsql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy:1.16
+        command: ["/cloud_sql_proxy",
+                  "-instances={{.Values.secrets.sql_connection}}=tcp:3306",
+                  "-credential_file=/secrets/cloudsql/credentials.json"]
+        volumeMounts:
+          - name: cloudsql-instance-credentials
+            mountPath: /secrets/cloudsql
+            readOnly: true
+       {{ end }}
+```
+
+In `charts/jx-quarkus-demo-01/values.yaml`:
+
+```yaml
+cloudsql:
+  enabled: "true"
+
+# define environment variables here as a map of key: value
+env:
+  GOOGLE_SQL_USER: vault:quarkus-petclinic:GOOGLE_SQL_USER
+  GOOGLE_SQL_CONN: jdbc:mysql://127.0.0.1:3306/fruits
+```
+
+In `charts/preview/values.yaml`:
+
+```yaml
+mysql:
+  mysqlUser: fruitsadmin
+  mysqlPassword: JFjec3c7MgFH6cZyKaVNaC2F
+  mysqlRootPassword: 4dDDPE5nj3dVPxDYsPgCzu9B
+  mysqlDatabase: fruits
+  persistence:
+    enabled: true
+    size: 50Gi
+
+preview:
+  cloudsql:
+    enabled: "false"
+  secrets:
+    sql_password: "4dDDPE5nj3dVPxDYsPgCzu9B"
+  env:
+    GOOGLE_SQL_USER: root
+    GOOGLE_SQL_CONN: jdbc:mysql://mysql:3306/fruits
+```
+
+In `charts/preview/requirements.yaml`:
+
+```yaml
+- name: mysql
+  version: 1.6.3
+  repository:  https://kubernetes-charts.storage.googleapis.com
+
+  # !! "alias: preview" must be last entry in dependencies array !!
+  # !! Place custom dependencies above !!
+- alias: preview
+  name: jx-quarkus-demo-01
+  repository: file://../jx-quarkus-demo-01
+```
+
+### Manage Database Schema with Flyway
+
+TODO
+
+* https://quarkus.io/guides/flyway
+
+### Integration Tests With Postman
+
+[Postman](https://learning.postman.com/docs/postman/launching-postman/introduction/) is a decent and commonly used [rest] API testing tool.
+It has a CLI alternative, which also ships as a [Docker image](https://hub.docker.com/r/postman/newman), called [Newman](https://github.com/postmanlabs/newman).
+
+We can use this to test our running Preview application.
+
+First, we create a [collection](https://learning.postman.com/docs/postman/collections/intro-to-collections/) of [tests](https://learning.postman.com/docs/postman/scripts/test-scripts/) with Postman, which we can then [export](https://learning.postman.com/docs/postman/collections/importing-and-exporting-data/#exporting-postman-data) as a json file.
+
+We can then call this JSON file an a new Jenkins X Pipeline step.
+We want to run that step against a running application, so we run it _after_ preview-promote step, which will finish with confirming the preview is live.
+
+Which will something like this:
+
+```yaml
+      - name: jx-preview
+        stage: promote
+        pipeline: pullRequest
+        step:
+          name: postman-tests
+          dir: /workspace/source
+          image: postman/newman
+          command: newman
+          args:
+            - run
+            - jx-quarkus-demo-01.postman_collection.json
+            - --global-var
+            - "baseUrl=http://jx-quarkus-demo-01.jx-joostvdg-jx-quarkus-demo-01-pr-${PULL_NUMBER}.jx.training.cloudbees.com"
+            - --verbose
+        type: after
+```
+
+As each PR will have a unique URL based on the PR number, we set the global variable - from Newman perspective - `baseUrl` to `$PULL_NUMBER`.
+Which is a [Pipeline environment variable](https://jenkins-x.io/docs/guides/using-jx/pipelines/envvars/) provided by the Jenkins X Pipeline.
+
+#### Newman JSON File Example
+
+We specify to variables in this script, `baseUrl`, which we set in the Jenkins X Pipeline Step, and `MANDARIN_ID`.
+`MANDARIN_ID` is set in one of the tests, when we add a new entry to the database.
+
+This way, we can ensure we also cleanup the database, so that an update to the PR has the original data set to work with.
+
+```json
+{
+	"variables": [],
+	"info": {
+		"name": "jx-quarkus-demo-01",
+		"_postman_id": "2c62b599-f952-d49c-3b36-5fb1b7a77472",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "find-all-fruits",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Successful GET request\"] = responseCode.code === 200;",
+							"",
+							"tests[\"Response time is less than 400ms\"] = responseTime < 400;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"JSON Data Test-1\"] = jsonData[0].name === \"Cherry\";",
+							"tests[\"JSON Data Test-2\"] = jsonData[1].name === \"Apple\";",
+							"tests[\"JSON Data Test-3\"] = jsonData[2].name === \"Banana\";",
+							"tests[\"JSON Data Test-4\"] = jsonData[3].color === \"Green\";",
+							"tests[\"JSON Data Test-5\"] = jsonData[4].color === \"Red\";",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/fruits",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Test fina all fruits"
+			},
+			"response": []
+		},
+		{
+			"name": "post-new-fruit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Successful GET request\"] = responseCode.code === 200;",
+							"",
+							"tests[\"Response time is less than 400ms\"] = responseTime < 400;",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"MANDARIN_ID\", jsonData.id);"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/fruits/name/Mandarin/color/Orange",
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "post-new-fruit-again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Successful GET request\"] = responseCode.code === 500;",
+							"",
+							"tests[\"Response time is less than 400ms\"] = responseTime < 400;",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/fruits/name/Mandarin/color/Orange",
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "{{baseUrl}}/fruits/{{MANDARIN_ID}}",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Successful GET request\"] = responseCode.code === 204;",
+							"",
+							"tests[\"Response time is less than 400ms\"] = responseTime < 400;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{baseUrl}}/fruits/{{MANDARIN_ID}}",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
+```  
+
 ### Use Actual MySQL Database In Local Build
 
 TODO
@@ -703,7 +935,6 @@ quarkus.log.sentry.in-app-packages=com.github.joostvdg
 * Explore Secrets injection from Vault / External Secrets Controller (forgot the name)
     * this is for the pipeline secrets, which Jenkins X currently does _not_ inject
 
-
 ## Other Reading Material
 
 * https://quarkus.io/guides/writing-native-applications-tips
@@ -719,3 +950,10 @@ quarkus.log.sentry.in-app-packages=com.github.joostvdg
 * https://openliberty.io/docs/ref/general/#metrics-catalog.html
 * https://grafana.com/grafana/dashboards/4701
 * https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/
+* https://github.com/quarkusio/quarkus/tree/master/integration-tests
+* https://hub.docker.com/r/postman/newman
+* https://github.com/postmanlabs/newman
+* https://learning.postman.com/docs/postman/launching-postman/introduction/
+* https://jenkins-x.io/docs/guides/using-jx/pipelines/envvars/
+* https://github.com/quarkusio/quarkus/tree/master/integration-tests/flyway/
+* https://quarkus.io/guides/flyway
