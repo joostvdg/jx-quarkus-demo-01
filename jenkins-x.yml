@@ -13,7 +13,7 @@ pipelineConfig:
         name: mvn-install
         steps:
           - name: mvn-deploy
-            command: mvn -Pnative package -e --show-version
+            command: mvn clean package -Pnative --show-version -DskipDocs
             image: caladreas/jx-builder-graalvm-maven-jdk11:v0.9.0
         containerOptions:
           env:
@@ -48,7 +48,7 @@ pipelineConfig:
         name: mvn-deploy
         steps:
           - name: mvn-deploy
-            command: mvn -Pnative package -e --show-version -DskipDocs
+            command: mvn clean package -Pnative --show-version -DskipDocs
             image: caladreas/jx-builder-graalvm-maven-jdk11:v0.9.0
         containerOptions:
           env:
