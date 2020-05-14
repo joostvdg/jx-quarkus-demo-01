@@ -914,6 +914,41 @@ quarkus.log.sentry.level=WARN
 quarkus.log.sentry.in-app-packages=com.github.joostvdg
 ```
 
+## Distributed Tracing with Jaeger
+
+* https://quarkus.io/guides/opentracing
+* https://github.com/opentracing-contrib/java-jdbc
+
+### Dependency
+
+```xml
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-smallrye-opentracing</artifactId>
+</dependency>
+<dependency>
+  <groupId>io.opentracing.contrib</groupId>
+  <artifactId>opentracing-jdbc</artifactId>
+</dependency>
+```
+
+### Properties
+
+```properties
+quarkus.jaeger.service-name=jx-quarkus
+quarkus.jaeger.sampler-type=const
+quarkus.jaeger.sampler-param=1
+quarkus.log.console.format=%d{HH:mm:ss} %-5p traceId=%X{traceId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
+quarkus.datasource.jdbc.driver=io.opentracing.contrib.jdbc.TracingDriver
+```
+
+### Update Container Env
+
+```yaml
+env:
+  GOOGLE_SQL_CONN: jdbc:tracing:mysql://127.0.0.1:3306/fruits
+```
+
 ## TODO
 
 * https://quarkus.io/guides/spring-cloud-config-client
