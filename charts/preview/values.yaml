@@ -36,3 +36,4 @@ preview:
   env:
     GOOGLE_SQL_USER: root
     GOOGLE_SQL_CONN: jdbc:mysql://preview-mysql:3306/fruits
+
