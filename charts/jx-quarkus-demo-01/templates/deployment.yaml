@@ -41,6 +41,9 @@ spec:
         envFrom:
           - secretRef:
               name: {{ template "fullname" . }}-sql-secret
+        envFrom:
+          - secretRef:
+              name: {{ template "fullname" . }}-sentry-dsn
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
