@@ -613,6 +613,75 @@ TODO
 
 * see: https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/
 
+## Sentry
+
+* https://quarkus.io/guides/logging-sentry
+* self hosting: https://github.com/helm/charts/tree/master/stable/sentry
+* SaaS: sentry.io
+
+It is recommended to use the SaaS, but if you can't or prefer to selve host, you can use the official docker container or the helm chart.
+
+Steps:
+
+* Create an account on [sentry.io](sentry.io) and create a new `project`. 
+    * or, host your own, and then create a new `project`
+* add sentry dependency to `pom.xml`
+* retrieve Sentry DSN for you application
+* add Sentry DSN into Vault
+* add Kubernetes secret to templates mounting the vault secret as Kubernetes secret
+* bind Kubernetes secret to Deployment
+* configure Sentry logging
+
+### Quarkus Sentry Dependency
+
+```xml
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-logging-sentry</artifactId>
+</dependency>
+```
+
+### Add secret placeholder to values.yaml
+
+```yaml
+secrets:
+  sql_password: ""
+  sql_connection: ""
+  sqlsa: ""
+  sentry_dsn: vault:quarkus-petclinic:SENTRY_DSN
+```
+
+### Sentry DSN Secret
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "fullname" . }}-sentry-dsn
+type: Opaque
+data:
+  SENTRY_DSN: {{ .Values.secrets.sentry_dsn }}
+```
+
+### Deployment
+
+```yaml
+envFrom:
+  - secretRef:
+      name: {{ template "fullname" . }}-sentry-dsn
+```
+
+### Configure Logging
+
+In `src/main/resources/application.properties`:
+
+```properties
+quarkus.log.sentry=true
+quarkus.log.sentry.dsn=${SENTRY_DSN}
+quarkus.log.sentry.level=WARN
+quarkus.log.sentry.in-app-packages=com.github.joostvdg
+```
+
 ## TODO
 
 * https://quarkus.io/guides/spring-cloud-config-client
