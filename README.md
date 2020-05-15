@@ -962,7 +962,7 @@ public class FruitResource {
 ```properties
 quarkus.jaeger.service-name=jx-quarkus
 quarkus.jaeger.sampler-type=const
-quarkus.jaeger.sampler-param=1
+quarkus.jaeger.sampler-param=${JAEGER_SAMPLER_RATE}
 quarkus.log.console.format=%d{HH:mm:ss} %-5p traceId=%X{traceId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 quarkus.datasource.jdbc.driver=io.opentracing.contrib.jdbc.TracingDriver
 quarkus.jaeger.endpoint=${JAEGER_COLLECTOR_ENDPOINT}
@@ -974,6 +974,8 @@ quarkus.jaeger.endpoint=${JAEGER_COLLECTOR_ENDPOINT}
 env:
   GOOGLE_SQL_CONN: jdbc:tracing:mysql://127.0.0.1:3306/fruits
   JAEGER_COLLECTOR_ENDPOINT: http://jx-jaeger-collector.monitoring:14268/api/traces
+  # Sample all requests. Set sampler-param to somewhere between 0 and 1, e.g. 0.50, if you do not wish to sample all requests.
+  JAEGER_SAMPLER_RATE: 1
 ```
 
 ## TODO

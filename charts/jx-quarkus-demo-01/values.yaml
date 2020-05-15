@@ -22,6 +22,8 @@ env:
   GOOGLE_SQL_USER: vault:quarkus-petclinic:GOOGLE_SQL_USER
   GOOGLE_SQL_CONN: jdbc:tracing:mysql://127.0.0.1:3306/fruits
   JAEGER_COLLECTOR_ENDPOINT: http://jx-jaeger-collector.monitoring:14268/api/traces
+  # Sample all requests. Set sampler-param to somewhere between 0 and 1, e.g. 0.50, if you do not wish to sample all requests.
+  JAEGER_SAMPLER_RATE: 1
 
 # enable this flag to use knative serve to deploy the app
 knativeDeploy: false
