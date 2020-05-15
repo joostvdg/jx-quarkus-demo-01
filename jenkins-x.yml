@@ -96,9 +96,12 @@ pipelineConfig:
         pipeline: release
         containerOptions:
           env:
-            - ANCHORE_CLI_USER: admin
-            - ANCHORE_CLI_PASS: foobar
-            - ANCHORE_CLI_URL: http://anchore-anchore-engine-api.anchore-engine:8228/v1/
+            - name: ANCHORE_CLI_USER
+              vaue: admin
+            - name: ANCHORE_CLI_PASS
+              value: foobar
+            - name: ANCHORE_CLI_URL
+              value: http://anchore-anchore-engine-api.anchore-engine:8228/v1/
         step:
           name: anchore-image-add
           image: anchore/engine-cli
@@ -113,9 +116,12 @@ pipelineConfig:
         pipeline: release
         containerOptions:
           env:
-            - ANCHORE_CLI_USER: admin
-            - ANCHORE_CLI_PASS: foobar
-            - ANCHORE_CLI_URL: http://anchore-anchore-engine-api.anchore-engine:8228/v1/
+            - name: ANCHORE_CLI_USER
+              vaue: admin
+            - name: ANCHORE_CLI_PASS
+              value: foobar
+            - name: ANCHORE_CLI_URL
+              value: http://anchore-anchore-engine-api.anchore-engine:8228/v1/
         step:
           name: anchore-image-evaluate
           image: anchore/engine-cli
