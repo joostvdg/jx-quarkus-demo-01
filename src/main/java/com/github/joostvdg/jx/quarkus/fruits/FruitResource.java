@@ -9,18 +9,17 @@ import java.util.Optional;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import org.jboss.logging.Logger;
 
 @RestController
 @RequestMapping(value = "/fruits")
 public class FruitResource {
 
-    private final Logger log = LoggerFactory.getLogger(FruitResource.class);
-
+    private static final Logger LOG = Logger.getLogger(FruitResource.class);
 
     private final FruitRepository fruitRepository;
 
@@ -36,6 +35,7 @@ public class FruitResource {
         var fruits = new ArrayList<Fruit>();
         it.forEach(fruits::add);
         fruits.sort(Comparator.comparing(Fruit::getId));
+        LOG.infof("Found %s fruits", fruits.size());
         return fruits;
     }
 
@@ -45,8 +45,9 @@ public class FruitResource {
     public ResponseEntity<Long> delete(@PathVariable(value = "id") long id) {
         try {
             fruitRepository.deleteById(id);
+            LOG.infof("Deleted fruit by id: %d", id);
         } catch (IllegalArgumentException iae) {
-            log.warn("Could not delete fruit with id: " + id, iae);
+            LOG.warn("Could not delete fruit with id: " + id, iae);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(id, HttpStatus.NO_CONTENT);
@@ -56,7 +57,9 @@ public class FruitResource {
     @Timed(name = "fruit_new_timer", description = "A measure of how long it takes to save a Fruit.", unit = MetricUnits.MILLISECONDS)
     @PostMapping("/name/{name}/color/{color}")
     public Fruit create(@PathVariable(value = "name") String name, @PathVariable(value = "color") String color) {
-        return fruitRepository.save(new Fruit(name, color));
+        Fruit newFruit = fruitRepository.save(new Fruit(name, color));
+        LOG.infof("Created new Fruit: name=%s, color=%s", name, color);
+        return newFruit;
     }
 
     @Counted(name = "fruit_update_count", description = "How many times a Fruit has been updated.")
@@ -67,6 +70,7 @@ public class FruitResource {
         if (optional.isPresent()) {
             Fruit fruit = optional.get();
             fruit.setColor(color);
+            LOG.infof("Updated Fruit with id %d, to color %s", id, color);
             return fruitRepository.save(fruit);
         }
 
@@ -77,6 +81,8 @@ public class FruitResource {
     @Timed(name = "fruit_getbycolor_timer", description = "A measure of how long it takes to retrieve Fruits by color.", unit = MetricUnits.MILLISECONDS)
     @GetMapping("/color/{color}")
     public List<Fruit> findByColor(@PathVariable(value = "color") String color) {
-        return fruitRepository.findByColor(color);
+        List<Fruit> foundFruit = fruitRepository.findByColor(color);
+        LOG.infof("Found %d fruits with the color %s", foundFruit.size(), color);
+        return foundFruit;
     }
 }
