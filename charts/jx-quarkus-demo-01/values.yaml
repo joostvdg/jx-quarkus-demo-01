@@ -21,6 +21,7 @@ cloudsql:
 env:
   GOOGLE_SQL_USER: vault:quarkus-petclinic:GOOGLE_SQL_USER
   GOOGLE_SQL_CONN: jdbc:tracing:mysql://127.0.0.1:3306/fruits
+  JAEGER_COLLECTOR_ENDPOINT: http://jx-jaeger-collector.monitoring:14268/api/traces
 
 # enable this flag to use knative serve to deploy the app
 knativeDeploy: false

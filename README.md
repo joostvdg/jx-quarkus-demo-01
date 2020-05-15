@@ -919,6 +919,31 @@ quarkus.log.sentry.in-app-packages=com.github.joostvdg
 * https://quarkus.io/guides/opentracing
 * https://github.com/opentracing-contrib/java-jdbc
 
+### Set Logger
+
+```java
+import org.jboss.logging.Logger;
+
+@RestController
+@RequestMapping(value = "/fruits")
+public class FruitResource {
+
+    private static final Logger LOG = Logger.getLogger(FruitResource.class);
+
+    @GetMapping("/")
+    @Counted(name = "fruit_get_all_count", description = "How many times all Fruits have been retrieved.")
+    @Timed(name = "fruit_get_all_timer", description = "A measure of how long it takes to retrieve all Fruits.", unit = MetricUnits.MILLISECONDS)
+    public List<Fruit> findAll() {
+        var it = fruitRepository.findAll();
+        List<Fruit> fruits = new ArrayList<Fruit>();
+        it.forEach(fruits::add);
+        fruits.sort(Comparator.comparing(Fruit::getId));
+        LOG.infof("Found {} fruits", fruits.size());
+        return fruits;
+    }
+}
+```
+
 ### Dependency
 
 ```xml
@@ -940,6 +965,7 @@ quarkus.jaeger.sampler-type=const
 quarkus.jaeger.sampler-param=1
 quarkus.log.console.format=%d{HH:mm:ss} %-5p traceId=%X{traceId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 quarkus.datasource.jdbc.driver=io.opentracing.contrib.jdbc.TracingDriver
+quarkus.jaeger.endpoint=${JAEGER_COLLECTOR_ENDPOINT}
 ```
 
 ### Update Container Env
@@ -947,6 +973,7 @@ quarkus.datasource.jdbc.driver=io.opentracing.contrib.jdbc.TracingDriver
 ```yaml
 env:
   GOOGLE_SQL_CONN: jdbc:tracing:mysql://127.0.0.1:3306/fruits
+  JAEGER_COLLECTOR_ENDPOINT: http://jx-jaeger-collector.monitoring:14268/api/traces
 ```
 
 ## TODO
