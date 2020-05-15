@@ -91,6 +91,38 @@ pipelineConfig:
             - --show-version
             - -DskipTests=true
         type: after
-
-
+      - name: sonar
+        stage: build
+        pipeline: release
+        containerOptions:
+          env:
+            - ANCHORE_CLI_USER: admin
+            - ANCHORE_CLI_PASS: foobar
+            - ANCHORE_CLI_URL: http://anchore-anchore-engine-api.anchore-engine:8228/v1/
+        step:
+          name: anchore-image-add
+          image: anchore/engine-cli
+          command: anchore-cli
+          args:
+            - image
+            - add
+            - $DOCKER_REGISTRY/$ORG/$APP_NAME:${VERSION}
+        type: after
+      - name: anchore-image-add
+        stage: build
+        pipeline: release
+        containerOptions:
+          env:
+            - ANCHORE_CLI_USER: admin
+            - ANCHORE_CLI_PASS: foobar
+            - ANCHORE_CLI_URL: http://anchore-anchore-engine-api.anchore-engine:8228/v1/
+        step:
+          name: anchore-image-evaluate
+          image: anchore/engine-cli
+          command: anchore-cli
+          args:
+            - evaluate
+            - check
+            - $DOCKER_REGISTRY/$ORG/$APP_NAME:${VERSION}
+        type: after
 
