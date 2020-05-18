@@ -1021,3 +1021,7 @@ env:
 * https://jenkins-x.io/docs/guides/using-jx/pipelines/envvars/
 * https://github.com/quarkusio/quarkus/tree/master/integration-tests/flyway/
 * https://quarkus.io/guides/flyway
+* https://rhuanrocha.net/2019/03/17/how-to-microprofile-opentracing-with-jaeger/
+* https://medium.com/jaegertracing/microprofile-tracing-in-supersonic-subatomic-quarkus-43020f89a753
+* https://github.com/opentracing-contrib/java-jdbc
+* https://quarkus.io/guides/opentracing
