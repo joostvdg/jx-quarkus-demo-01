@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 27,
-  "iteration": 1589126987588,
+  "iteration": 1589793457816,
   "links": [],
   "panels": [
     {
@@ -24,7 +24,7 @@
       "datasource": null,
       "gridPos": {
         "h": 3,
-        "w": 8,
+        "w": 7,
         "x": 0,
         "y": 0
       },
@@ -85,6 +85,7 @@
         "#299c46"
       ],
       "datasource": null,
+      "decimals": 1,
       "format": "s",
       "gauge": {
         "maxValue": 100,
@@ -95,8 +96,8 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 8,
-        "x": 8,
+        "w": 10,
+        "x": 7,
         "y": 0
       },
       "id": 6,
@@ -144,7 +145,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": "0,60",
+      "thresholds": "0,3600",
       "timeFrom": null,
       "timeShift": null,
       "title": "Uptime",
@@ -179,8 +180,8 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 7,
-        "x": 16,
+        "w": 6,
+        "x": 17,
         "y": 0
       },
       "id": 10,
@@ -285,7 +286,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(base_gc_time_total_seconds{app=\"$app\"}) by (app) / sum(base_jvm_uptime_seconds{app=\"$app\"}) by (app)",
+          "expr": "sum(rate(base_gc_time_total_seconds{app=\"$app\"}[5m])) by (app)",
           "interval": "",
           "legendFormat": "{{app}}",
           "refId": "A"
@@ -295,7 +296,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "GC Time Spent Relative To Uptime",
+      "title": "GC Time Spent Rate",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -686,6 +687,7 @@
       }
     }
   ],
+  "refresh": "5m",
   "schemaVersion": 22,
   "style": "dark",
   "tags": [],
@@ -726,7 +728,6 @@
       {
         "allValue": null,
         "current": {
-          "tags": [],
           "text": "jx-quarkus-demo-01",
           "value": "jx-quarkus-demo-01"
         },
@@ -753,7 +754,7 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
@@ -776,5 +777,5 @@
   "variables": {
     "list": []
   },
-  "version": 4
+  "version": 6
 }
